@@ -17,9 +17,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.yeldar.ch1.ui.theme.Ch1Theme
 
 class MainActivity : ComponentActivity() {
@@ -44,7 +49,19 @@ class MainActivity : ComponentActivity() {
 //                    Column()
 //                    Row()
 //                    Notification()
-                    LColumn(modifier = Modifier.padding(innerPadding))
+//                    LColumn(modifier = Modifier.padding(innerPadding))
+//                    Column(
+//                        Modifier.padding(innerPadding).fillMaxSize(),
+//                        horizontalAlignment = Alignment.CenterHorizontally,
+//                        verticalArrangement = Arrangement.SpaceAround
+//                    ) {
+//                        LRow(modifier = Modifier.weight(1f))
+//                        LColumn(modifier = Modifier.weight(1f))
+//                        LColumn(modifier = Modifier.weight(1f))
+//                        LVGrid(modifier = Modifier.weight(1f))
+//                        LHGrid(modifier = Modifier.weight(1f))
+//                    }
+                    CLayout(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -68,9 +85,10 @@ fun GreetingPreview() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LRow(modifier = Modifier.padding(1.dp))
-            LColumn(modifier = Modifier.padding(1.dp).weight(1f))
-            LColumn(modifier = Modifier.padding(1.dp).weight(1f))
+//            LRow(modifier = Modifier.padding(1.dp))
+//            LColumn(modifier = Modifier.padding(1.dp).weight(1f))
+//            LColumn(modifier = Modifier.padding(1.dp).weight(1f))
+//            LVGrid(modifier = Modifier.padding(8.dp))
         }
     }
 }
@@ -123,7 +141,7 @@ fun LRow(
 ) {
     LazyRow(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .background(Color.Blue)
     ) {
         items(100) {
@@ -141,8 +159,8 @@ fun LColumn(
 ) {
     LazyColumn(
         modifier = modifier
-            .fillMaxSize()
-            .background(Color.LightGray)
+            .fillMaxWidth()
+            .background(Color.Green)
     ) {
         items(100) {
             Text(
@@ -150,5 +168,70 @@ fun LColumn(
                 text = "Item number: $it"
             )
         }
+    }
+}
+
+@Composable
+fun LVGrid(modifier: Modifier = Modifier) {
+    LazyVerticalGrid(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.Red),
+        columns = GridCells.Fixed(3)
+    ) {
+        items(100) {
+            Text(
+                modifier = Modifier.padding(6.dp),
+                text = "Item number $it"
+            )
+        }
+    }
+}
+
+@Composable
+fun LHGrid(modifier: Modifier = Modifier) {
+    LazyHorizontalGrid(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.Yellow),
+        rows = GridCells.Fixed(3)
+    ) {
+        items(100) {
+            Text(
+                modifier = Modifier.padding(6.dp),
+                text = "Item number $it"
+            )
+        }
+    }
+}
+
+@Composable
+fun CLayout(modifier: Modifier = Modifier) {
+    ConstraintLayout(
+       modifier = modifier
+    ) {
+        val (icon, text) = createRefs()
+
+        Icon(
+            modifier = Modifier.size(80.dp)
+                .constrainAs(icon) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                },
+            imageVector = Icons.Outlined.Notifications,
+            contentDescription = null,
+            tint = Color.Green
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(text) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(icon.end)
+                },
+            text = "9",
+            style = MaterialTheme.typography.titleLarge
+        )
     }
 }
